@@ -1,0 +1,6 @@
+---
+description:
+globs: *.test.ts,*.test.tsx,*.test.js,*.test.jsx
+alwaysApply: false
+---
+Generate/modify Jest tests in JavaScript (`.js` or `.jsx`). Mock all external dependencies (APIs, file/system access, third-party services, databases) using `jest.mock()` and `jest.fn()` (mocks in `src/app/__mocks__`). Structure tests clearly with `describe` and `it`/`test`. Implement proper setup/teardown (`beforeEach`, `afterEach`). Follow consistent naming. Utilize Jest utilities appropriately (e.g., `jest.useFakeTimers`).

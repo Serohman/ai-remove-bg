@@ -1,0 +1,22 @@
+---
+description:
+globs: src/**/*.js,src/**/*.ts,src/**/*.tsx,src/**/*.jsx
+alwaysApply: false
+---
+# Mandatory Test-Driven Development
+- Features/fixes require TDD.
+- Tests precede code.
+- Completion = all tests pass (`npm test`).
+
+## AI Agent Test Coverage:
+- List test cases (functionality, edges, failures) before coding.
+- Write/update tests for each case first.
+- Document test coverage mapping to requirements (before implementation).
+- No coding with incomplete critical test coverage.
+- For each change:
+  - List test scenarios.
+  - Write all tests.
+  - Implement logic.
+  - Ensure all tests pass for completion.
+
+**Note**: Strict adherence to order and all steps is mandatory for every change. No skipping or combining.

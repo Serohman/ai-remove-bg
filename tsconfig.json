@@ -1,0 +1,51 @@
+{
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    // Basic Options
+    "target": "ESNext", // The version of JavaScript you're targeting.
+    "module": "ESNext",
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "allowJs": true,
+    "checkJs": true,
+
+    // Output settings
+    "noEmit": true, // Next.js handles the build process
+    "rootDir": ".",
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["./*"]
+    },
+
+    // Module Resolution Options
+    "moduleResolution": "bundler",
+    "esModuleInterop": true, // Normalize CommonJS and ES modules behaviour
+    "resolveJsonModule": true, // Allows importing JSON files as modules
+    "moduleDetection": "force", // Forces module detection to avoid ambiguity
+    "isolatedModules": true,
+    "jsx": "preserve", // Added for Next.js JSX handling
+
+    // Type Checking Options
+    "strict": true,
+    "skipLibCheck": true, // Skip type checking in node_modules to boost performance
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "exactOptionalPropertyTypes": true, // Ensures optional properties are strictly typed
+    "noFallthroughCasesInSwitch": true, // Prevents fallthrough cases in switch statements
+    "noImplicitOverride": true, // Requires explicit override keyword for overridden methods
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true, // Adds undefined to type of indexed access if index signature is not defined
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+    // Incremental Compilation
+    "incremental": true,
+    "tsBuildInfoFile": "./.temp/tsconfig.tsbuildinfo", // Path to save incremental compilation info
+
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  }
+}

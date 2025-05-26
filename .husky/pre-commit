@@ -1,0 +1,41 @@
+echo -e "\n--------------------------------"
+echo -e "Running pre-commit hooks..."
+
+# Check if package.json or package-lock.json is staged
+if git diff --cached --name-only | grep -E 'package\.json|package-lock\.json' > /dev/null; then
+  # Run npm audit and check for vulnerabilities
+  if ! npx npm audit --audit-level=high > /dev/null; then
+    echo -e "[ERROR] Vulnerabilities found by NPM audit. Please fix them before committing."
+    echo -e "--------------------------------\n"
+    exit 1
+  fi
+fi
+
+# Check if any TypeScript files or config are staged
+if git diff --cached --name-only | grep -E '\.(ts|tsx)$|tsconfig\.json' > /dev/null; then
+  if ! npx npm run precommit:typecheck > /dev/null; then
+    echo -e "[ERROR] Run 'npm run precommit:typecheck' and fix the errors."
+    echo -e "--------------------------------\n"
+    exit 1
+  fi
+fi
+
+# Check if any JS/TS files in src are staged
+if git diff --cached --name-only | grep -E '^src/.*\.(js|jsx|ts|tsx)$' > /dev/null; then
+  if ! npx npm run precommit:lint > /dev/null; then
+    echo -e "[ERROR] Lint errors found. Please fix them before committing."
+    echo -e "--------------------------------\n"
+    exit 1
+  fi
+fi
+
+# Format all staged files if any are present
+if git diff --cached --name-only | grep . > /dev/null; then
+  if ! npx npm run precommit:format > /dev/null; then
+    echo -e "[ERROR] Formatting failed. Please fix formatting issues."
+    echo -e "--------------------------------\n"
+    exit 1
+  fi
+fi
+
+echo -e "--------------------------------\n"

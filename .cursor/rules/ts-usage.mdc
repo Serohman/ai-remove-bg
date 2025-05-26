@@ -1,0 +1,8 @@
+---
+description:
+globs: *.tsx,*.ts
+alwaysApply: false
+---
+# Enforce Type-Safe and Best-Practice TypeScript Code
+
+Generate/modify TypeScript to be strictly type-safe (`no any`), compile cleanly (`npm run precommit:typecheck`), and follow best practices: strict mode, linting (`npm run precommit:lint`), JSDoc for exported functions/complex logic, unit tests for critical code, and schema validation (Zod) for external data.

@@ -1,0 +1,13 @@
+---
+description: Mandate a strict adherence to user-specified requirements, prioritizing focused, autonomous execution and clarification for ambiguities.
+globs:
+alwaysApply: true
+---
+# Strict Requirement Following:
+
+1. Execute user requirements exactly as specified.
+2. Remain strictly on topic.
+3. Prioritize direct implementation over creative exploration.
+4. Implement only what is explicitly requested, without adding extra features.
+5. Request clarification for any ambiguous requirements.
+6. Aim to fulfill requests autonomously while strictly adhering to all requirements.

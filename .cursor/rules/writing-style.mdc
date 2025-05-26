@@ -1,0 +1,10 @@
+---
+description: The writing style guidelines for all responses
+globs:
+alwaysApply: true
+---
+# Writing Style
+All responses must adhere to these writing standards:
+- **Tone**: Direct, Action-oriented, practical, pragmatic, casual yet professional
+- **Structure**: Hierarchical organization, clear sections, bullet points/lists, consistent formatting, digestible segments for complexity.
+- **Vocabulary**: Avoid unnecessary wording and verbosity. Use the fewest, most effective words.

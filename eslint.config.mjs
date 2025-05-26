@@ -17,10 +17,16 @@ const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   ...tseslint.config(tseslint.configs.strict),
   {
+    files: ["*.js", "*.jsx"], // Target only .js and .jsx files
     rules: {
-      "@typescript-eslint/no-explicit-any": "warn",
-      "@typescript-eslint/no-unused-vars": "warn",
       "no-unused-vars": "warn",
+    },
+  },
+  {
+    rules: {
+      "@next/next/no-img-element": "off",
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-unused-vars": "off", // TSConfig already warns about this
     },
   },
   {

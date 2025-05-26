@@ -10,6 +10,7 @@ if git diff --cached --name-only | grep -E 'package\.json|package-lock\.json' > 
     exit 1
   fi
 fi
+echo -e "[1/4] Running NPM audit"
 
 # Check if any TypeScript files or config are staged
 if git diff --cached --name-only | grep -E '\.(ts|tsx)$|tsconfig\.json' > /dev/null; then
@@ -19,6 +20,7 @@ if git diff --cached --name-only | grep -E '\.(ts|tsx)$|tsconfig\.json' > /dev/n
     exit 1
   fi
 fi
+echo -e "[2/4] Compiling TS"
 
 # Check if any JS/TS files in src are staged
 if git diff --cached --name-only | grep -E '^src/.*\.(js|jsx|ts|tsx)$' > /dev/null; then
@@ -28,6 +30,7 @@ if git diff --cached --name-only | grep -E '^src/.*\.(js|jsx|ts|tsx)$' > /dev/nu
     exit 1
   fi
 fi
+echo -e "[3/4] Running ESLint"
 
 # Format all staged files if any are present
 if git diff --cached --name-only | grep . > /dev/null; then
@@ -37,5 +40,6 @@ if git diff --cached --name-only | grep . > /dev/null; then
     exit 1
   fi
 fi
+echo -e "[4/4] Running Prettier"
 
 echo -e "--------------------------------\n"

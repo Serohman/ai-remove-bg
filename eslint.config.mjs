@@ -35,6 +35,10 @@ const eslintConfig = [
       "@typescript-eslint/no-var-requires": "off",
     },
   },
+  {
+    files: ["**/*.test.js"],
+    env: {jest: true},
+  },
 ];
 
 export default eslintConfig;

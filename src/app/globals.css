@@ -12,6 +12,19 @@
   --font-mono: var(--font-geist-mono);
 }
 
+@theme {
+  --animate-shimmer-infinite: shimmer-infinite 2s ease-in-out infinite;
+
+  @keyframes shimmer-infinite {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -35,4 +48,21 @@ body {
   display: flex;
   flex-direction: column;
   overflow-y: auto; /* Makes the body scrollable if content overflows vertically */
+}
+
+progress {
+  border: 0;
+  border-radius: 1em;
+  height: calc(var(--spacing) * 2);
+}
+progress::-webkit-progress-bar {
+  border: 0;
+  border-radius: 1em;
+  background-color: var(--color-gray-100);
+  box-shadow: inset 0px 0px 2px var(--color-gray-400);
+}
+progress::-webkit-progress-value {
+  border: 0;
+  border-radius: 1em;
+  background-color: var(--color-blue-600);
 }

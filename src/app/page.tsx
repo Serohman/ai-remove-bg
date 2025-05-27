@@ -72,6 +72,16 @@ export default function Home() {
     setState(State.Upload);
   };
 
+  const uploadExample = async (num: number) => {
+    const url = `/example-${num}.jpg`;
+    const name = `example-${num}`;
+    setUploadedImageURL(url);
+    setUploadedImageName(name);
+    setState(State.Progress);
+    const segment = await pipeline.start(url);
+    renderFinalResult(segment, url);
+  };
+
   return (
     <div className="flex justify-center items-start h-full pt-[12lvh]">
       <div className="max-w-2xl">
@@ -81,8 +91,20 @@ export default function Home() {
         </h1>
         <p className="leading-none text-center max-w-xl">
           Free, private and fast background remover that runs locally in your browser, powered by
-          the RMBG V1.4 model from{" "}
-          <a className="text-blue-500" href="https://bria.ai/" target="_blank">
+          the{" "}
+          <a
+            className="text-gray-600 underline hover:text-blue-500"
+            href="https://huggingface.co/briaai/RMBG-1.4"
+            target="_blank"
+          >
+            RMBG V1.4
+          </a>{" "}
+          model from{" "}
+          <a
+            className="text-gray-600 underline hover:text-blue-500"
+            href="https://bria.ai/"
+            target="_blank"
+          >
             BRIA AI
           </a>
         </p>
@@ -110,7 +132,7 @@ export default function Home() {
                 </svg>
               </div>
               <h2 className="leading-none mb-1 text-xl">Upload Images</h2>
-              <p className="leading-none text-sm text-gray-500">Supports: JPG, PNG, WebP</p>
+              <p className="leading-none text-sm text-gray-500 mb-1">Supports: JPG, PNG, WebP</p>
               <input
                 type="file"
                 accept=".jpg, .jpeg, .png, .webp"
@@ -145,7 +167,24 @@ export default function Home() {
         </div>
 
         {/* Footer */}
-        <div>
+        <div className="flex justify-center items-center">
+          {isState(State.Upload) && (
+            <p className="">
+              <a
+                onClick={() => uploadExample(1)}
+                className="cursor-pointer text-gray-600 hover:text-blue-500 underline mr-4"
+              >
+                Try Example 1
+              </a>
+              <a
+                onClick={() => uploadExample(2)}
+                className="cursor-pointer text-gray-600 hover:text-blue-500 underline"
+              >
+                Try Example 2
+              </a>
+            </p>
+          )}
+
           {isState(State.Progress) &&
             pipeline.info?.status === "progress" &&
             pipeline.info.progress < 100 && (
@@ -164,10 +203,10 @@ export default function Home() {
           {isState(State.Download) && (
             <div className="flex justify-center items-center">
               <a
-                className="cursor-pointer text-gray-600 hover:underline mr-4"
+                className="cursor-pointer text-gray-600 hover:text-blue-500 underline mr-4"
                 onClick={() => reset()}
               >
-                Upload Different Image
+                Try Different Image
               </a>
               <a
                 className="bg-blue-600 py-1 px-3 text-white hover:bg-blue-500 active:bg-blue-600 rounded"

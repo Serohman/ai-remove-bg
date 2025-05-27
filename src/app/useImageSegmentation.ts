@@ -1,9 +1,4 @@
-import {
-  ImageSegmentationPipeline,
-  ImageSegmentationPipelineOptions,
-  ProgressInfo,
-  pipeline,
-} from "@huggingface/transformers";
+import {ImageSegmentationPipelineOptions, ProgressInfo, pipeline} from "@huggingface/transformers";
 import {useCallback, useState} from "react";
 
 export function useImageSegmentation(modelName: string) {

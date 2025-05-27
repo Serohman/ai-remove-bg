@@ -23,10 +23,11 @@ const eslintConfig = [
     },
   },
   {
+    files: ["*.ts", "*.tsx"],
     rules: {
       "@next/next/no-img-element": "off",
       "@typescript-eslint/no-explicit-any": "warn",
-      "@typescript-eslint/no-unused-vars": "off", // TSConfig already warns about this
+      "@typescript-eslint/no-unused-vars": "off",
     },
   },
   {

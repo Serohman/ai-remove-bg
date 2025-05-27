@@ -2,6 +2,7 @@ echo -e "\n--------------------------------"
 echo -e "Running pre-commit hooks..."
 
 # Check if package.json or package-lock.json is staged
+echo -e "[Step 1/4] Running NPM audit"
 if git diff --cached --name-only | grep -E 'package\.json|package-lock\.json' > /dev/null; then
   # Run npm audit and check for vulnerabilities
   if ! npx npm audit --audit-level=high > /dev/null; then
@@ -10,9 +11,10 @@ if git diff --cached --name-only | grep -E 'package\.json|package-lock\.json' > 
     exit 1
   fi
 fi
-echo -e "[1/4] Running NPM audit"
+
 
 # Check if any TypeScript files or config are staged
+echo -e "[Step 2/4] Compiling TS"
 if git diff --cached --name-only | grep -E '\.(ts|tsx)$|tsconfig\.json' > /dev/null; then
   if ! npx npm run precommit:typecheck > /dev/null; then
     echo -e "[ERROR] Run 'npm run precommit:typecheck' and fix the errors."
@@ -20,9 +22,9 @@ if git diff --cached --name-only | grep -E '\.(ts|tsx)$|tsconfig\.json' > /dev/n
     exit 1
   fi
 fi
-echo -e "[2/4] Compiling TS"
 
 # Check if any JS/TS files in src are staged
+echo -e "[Step 3/4] Running ESLint"
 if git diff --cached --name-only | grep -E '^src/.*\.(js|jsx|ts|tsx)$' > /dev/null; then
   if ! npx npm run precommit:lint > /dev/null; then
     echo -e "[ERROR] Lint errors found. Please fix them before committing."
@@ -30,9 +32,9 @@ if git diff --cached --name-only | grep -E '^src/.*\.(js|jsx|ts|tsx)$' > /dev/nu
     exit 1
   fi
 fi
-echo -e "[3/4] Running ESLint"
 
 # Format all staged files if any are present
+echo -e "[Step 4/4] Running Prettier"
 if git diff --cached --name-only | grep . > /dev/null; then
   if ! npx npm run precommit:format > /dev/null; then
     echo -e "[ERROR] Formatting failed. Please fix formatting issues."
@@ -40,6 +42,5 @@ if git diff --cached --name-only | grep . > /dev/null; then
     exit 1
   fi
 fi
-echo -e "[4/4] Running Prettier"
 
 echo -e "--------------------------------\n"

@@ -4,7 +4,7 @@ import {ImageSegmentationPipelineOutput, RawImage} from "@huggingface/transforme
 import React, {ChangeEvent, useState} from "react";
 import {useImageSegmentation} from "./useImageSegmentation";
 
-const enum State {
+enum State {
   Upload,
   Progress,
   Download,

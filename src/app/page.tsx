@@ -3,6 +3,7 @@
 import {RawImage} from "@huggingface/transformers";
 import React, {useState} from "react";
 import {Header} from "./components/Header";
+import {ImageProcessing} from "./components/ImageProcessing";
 import ImageUpload, {ImageUploadProps} from "./components/ImageUpload";
 import {Image} from "./types/image";
 import {useImageSegmentation} from "./useImageSegmentation";
@@ -10,8 +11,8 @@ import {applyAlphaMask} from "./utils/image";
 
 enum State {
   Upload,
-  Progress,
-  Download,
+  Process,
+  Finished,
 }
 
 export default function Home() {
@@ -24,7 +25,7 @@ export default function Home() {
   const isState = (s: State) => s === state;
 
   const handleInputChange: ImageUploadProps["onInputChange"] = async (image) => {
-    setState(State.Progress);
+    setState(State.Process);
     setInputImage(image);
     handleImageProcessing(image);
   };
@@ -60,7 +61,7 @@ export default function Home() {
     if (ctx) {
       ctx.putImageData(data, 0, 0);
       setOutputImage({url: canvas.toDataURL("image/png")});
-      setState(State.Download);
+      setState(State.Finished);
     }
   };
 
@@ -79,7 +80,7 @@ export default function Home() {
       name,
       raw,
     };
-    setState(State.Progress);
+    setState(State.Process);
     setInputImage(exampleImage);
     handleImageProcessing(exampleImage);
   };
@@ -92,19 +93,9 @@ export default function Home() {
         {/* Image Thumbnail */}
         <div className="mt-5 mb-5 w-full h-[50lvh] ">
           {isState(State.Upload) && <ImageUpload onInputChange={handleInputChange} />}
+          {isState(State.Process) && <ImageProcessing url={inputImage.url || ""} />}
 
-          {isState(State.Progress) && (
-            <div
-              className="relative overflow-hidden w-full h-full flex flex-col justify-center items-center rounded-xl bg-contain bg-center bg-no-repeat"
-              style={{
-                backgroundImage: `linear-gradient(to right, rgba(255,255,255,.4), rgba(255,255,255,.4)), url(${inputImage.url})`,
-              }}
-            >
-              <div className="absolute inset-0 from-10%  via-50% to-90% animate-shimmer-infinite bg-gradient-to-r from-transparent via-white/50 to-transparent" />
-            </div>
-          )}
-
-          {isState(State.Download) &&
+          {isState(State.Finished) &&
             inputImage.raw?.width &&
             inputImage.raw?.height &&
             outputImage.url && (
@@ -139,7 +130,7 @@ export default function Home() {
             </p>
           )}
 
-          {isState(State.Progress) &&
+          {isState(State.Process) &&
             pipeline.info?.status === "progress" &&
             pipeline.info.progress < 100 && (
               <div>
@@ -148,13 +139,13 @@ export default function Home() {
               </div>
             )}
 
-          {isState(State.Progress) && pipeline.info?.status === "ready" && (
+          {isState(State.Process) && pipeline.info?.status === "ready" && (
             <div className="text-center">
               <label className="text-xs font-mono">Analysing the image...</label>
             </div>
           )}
 
-          {isState(State.Download) && (
+          {isState(State.Finished) && (
             <div className="flex justify-center items-center">
               <a
                 className="cursor-pointer text-gray-600 hover:text-blue-500 underline mr-4"

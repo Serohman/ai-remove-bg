@@ -1,7 +1,7 @@
-export interface ImageMetadata {
-  name?: string;
-  url?: string;
-  width?: number;
-  height?: number;
-  pixels?: ImageData;
+import {RawImage} from "@huggingface/transformers";
+
+export interface Image {
+  raw: RawImage;
+  name: string;
+  url: string;
 }

@@ -1,9 +1,9 @@
 import {RawImage} from "@huggingface/transformers";
 import {ChangeEvent} from "react";
-import {ImageMetadata} from "../types/image";
+import {Image} from "../types/image";
 
 export interface ImageUploadProps {
-  onInputChange: (image: Required<ImageMetadata>) => void;
+  onInputChange: (image: Image) => void;
 }
 
 export default function ImageUpload({onInputChange}: ImageUploadProps) {
@@ -11,10 +11,9 @@ export default function ImageUpload({onInputChange}: ImageUploadProps) {
     if (evt.target.files instanceof FileList && evt.target.files[0]) {
       const file = evt.target.files[0];
       const url = URL.createObjectURL(file);
-      const {height, width, data} = await RawImage.fromBlob(file);
+      const raw = await RawImage.fromBlob(file);
       const name = file.name.substring(0, file.name.lastIndexOf("."));
-      const imageData = new ImageData(data as Uint8ClampedArray, width, height);
-      onInputChange({pixels: imageData, name, url, width, height});
+      onInputChange({raw, name, url});
     } else {
       throw new Error("Unexpected error: Input FilesList is null or empty");
     }

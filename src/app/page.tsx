@@ -1,11 +1,12 @@
 "use client";
 
-import {ImageSegmentationPipelineOutput, RawImage} from "@huggingface/transformers";
-import React, {ChangeEvent, useState} from "react";
+import {RawImage} from "@huggingface/transformers";
+import React, {useState} from "react";
 import {Header} from "./components/Header";
 import ImageUpload, {ImageUploadProps} from "./components/ImageUpload";
-import {ImageMetadata} from "./types/image";
+import {Image} from "./types/image";
 import {useImageSegmentation} from "./useImageSegmentation";
+import {applyAlphaMask} from "./utils/image";
 
 enum State {
   Upload,
@@ -14,39 +15,51 @@ enum State {
 }
 
 export default function Home() {
-  const [inputImage, setInputImage] = useState<ImageMetadata>({});
-  const [outputImage, setOutputImage] = useState<ImageMetadata>({});
+  const [inputImage, setInputImage] = useState<Partial<Image>>({});
+  const [outputImage, setOutputImage] = useState<Partial<Image>>({});
 
   const [state, setState] = useState(State.Upload);
   const pipeline = useImageSegmentation("briaai/RMBG-1.4");
 
   const isState = (s: State) => s === state;
 
-  const handleInputChange: ImageUploadProps["onInputChange"] = async (imageMetadata) => {
+  const handleInputChange: ImageUploadProps["onInputChange"] = async (image) => {
     setState(State.Progress);
-    setInputImage(imageMetadata);
-    const segment = await pipeline.start(imageMetadata.url);
-    renderFinalResult(segment, imageMetadata.url);
+    setInputImage(image);
+    handleImageProcessing(image);
   };
 
-  const renderFinalResult = async (segment: ImageSegmentationPipelineOutput, url: string) => {
-    const image = await RawImage.fromURL(url);
-    const mask = segment.mask;
-    const draftCanvas = document.createElement("canvas");
-    const draftCtx = draftCanvas.getContext("2d");
-    draftCanvas.width = image.width;
-    draftCanvas.height = image.height;
+  const handleImageProcessing = async (sourceImage: Image) => {
+    // Get the output/result from the segmentation pipeline
+    const segmentationOutput = await pipeline.start(sourceImage.url);
 
-    if (draftCtx) {
-      // Draw original image output to canvas
-      draftCtx.drawImage(image.toCanvas(), 0, 0);
-      // Update alpha channel
-      const pixelData = draftCtx.getImageData(0, 0, image.width, image.height);
-      for (let i = 0; i < mask.data.length; ++i) {
-        pixelData.data[4 * i + 3] = mask.data[i] ?? 0; // Change ?? to something more appropriate
-      }
-      draftCtx.putImageData(pixelData, 0, 0);
-      setOutputImage({url: draftCanvas.toDataURL("image/png")});
+    // Extract the original image's pixel data
+    const sourcePixelData = sourceImage.raw.data;
+
+    // Extract the mask data from the segmentation output
+    const maskPixelData = segmentationOutput.mask.data;
+
+    // Apply the mask to the original image
+    const processedPixelData = applyAlphaMask(sourcePixelData, maskPixelData);
+
+    // Create and renderthe output image data object
+    createFinalResult(
+      new ImageData(
+        processedPixelData as Uint8ClampedArray,
+        sourceImage.raw.width,
+        sourceImage.raw.height
+      )
+    );
+  };
+
+  const createFinalResult = async (data: ImageData) => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = data.width;
+    canvas.height = data.height;
+    if (ctx) {
+      ctx.putImageData(data, 0, 0);
+      setOutputImage({url: canvas.toDataURL("image/png")});
       setState(State.Download);
     }
   };
@@ -60,18 +73,15 @@ export default function Home() {
   const uploadExample = async (num: number) => {
     const url = `/example-${num}.jpg`;
     const name = `example-${num}`;
-    const {width, height, data} = await RawImage.fromURL(url);
-    const imageMetadata = {
-      pixels: new ImageData(data as Uint8ClampedArray, width, height),
+    const raw = await RawImage.fromURL(url);
+    const exampleImage: Image = {
       url,
       name,
-      width,
-      height,
+      raw,
     };
-    setInputImage(imageMetadata);
     setState(State.Progress);
-    const segment = await pipeline.start(url);
-    renderFinalResult(segment, imageMetadata.url);
+    setInputImage(exampleImage);
+    handleImageProcessing(exampleImage);
   };
 
   return (
@@ -94,17 +104,20 @@ export default function Home() {
             </div>
           )}
 
-          {isState(State.Download) && inputImage.width && inputImage.height && outputImage.url && (
-            <img
-              src={outputImage.url}
-              alt=""
-              className="h-full mx-auto"
-              style={{
-                backgroundImage:
-                  "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAGUExURb+/v////5nD/3QAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAUSURBVBjTYwABQSCglEENMxgYGAAynwRB8BEAgQAAAABJRU5ErkJggg==",
-              }}
-            />
-          )}
+          {isState(State.Download) &&
+            inputImage.raw?.width &&
+            inputImage.raw?.height &&
+            outputImage.url && (
+              <img
+                src={outputImage.url}
+                alt=""
+                className="h-full mx-auto"
+                style={{
+                  backgroundImage:
+                    "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAGUExURb+/v////5nD/3QAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAUSURBVBjTYwABQSCglEENMxgYGAAynwRB8BEAgQAAAABJRU5ErkJggg==",
+                }}
+              />
+            )}
         </div>
 
         {/* Footer */}

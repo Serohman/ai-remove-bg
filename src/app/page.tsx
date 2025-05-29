@@ -3,6 +3,7 @@
 import {RawImage} from "@huggingface/transformers";
 import React, {useState} from "react";
 import {Header} from "./components/Header";
+import {ImagePreview} from "./components/ImagePreview";
 import {ImageProcessing} from "./components/ImageProcessing";
 import ImageUpload, {ImageUploadProps} from "./components/ImageUpload";
 import {Image} from "./types/image";
@@ -94,21 +95,7 @@ export default function Home() {
         <div className="mt-5 mb-5 w-full h-[50lvh] ">
           {isState(State.Upload) && <ImageUpload onInputChange={handleInputChange} />}
           {isState(State.Process) && <ImageProcessing url={inputImage.url || ""} />}
-
-          {isState(State.Finished) &&
-            inputImage.raw?.width &&
-            inputImage.raw?.height &&
-            outputImage.url && (
-              <img
-                src={outputImage.url}
-                alt=""
-                className="h-full mx-auto"
-                style={{
-                  backgroundImage:
-                    "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAGUExURb+/v////5nD/3QAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAUSURBVBjTYwABQSCglEENMxgYGAAynwRB8BEAgQAAAABJRU5ErkJggg==",
-                }}
-              />
-            )}
+          {isState(State.Finished) && <ImagePreview url={outputImage.url || ""} />}
         </div>
 
         {/* Footer */}
@@ -151,7 +138,7 @@ export default function Home() {
                 className="cursor-pointer text-gray-600 hover:text-blue-500 underline mr-4"
                 onClick={() => reset()}
               >
-                Try Different Image
+                Reset
               </a>
               <a
                 className="bg-blue-600 py-1 px-3 text-white hover:bg-blue-500 active:bg-blue-600 rounded"

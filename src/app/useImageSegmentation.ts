@@ -12,6 +12,7 @@ export function useImageSegmentation(modelName: string) {
       const result = await segmentor(url, options);
 
       if (result[0]) {
+        setInfo(undefined);
         return result[0];
       }
 

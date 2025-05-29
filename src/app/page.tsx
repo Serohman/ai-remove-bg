@@ -1,7 +1,9 @@
 "use client";
 
-import {RawImage} from "@huggingface/transformers";
 import React, {useState} from "react";
+import {FooterWithDownloaod} from "./components/FooterWithDownload";
+import {FooterWithExamples} from "./components/FooterWithExamples";
+import {FooterWithProgress} from "./components/FooterWithProgress";
 import {Header} from "./components/Header";
 import {ImagePreview} from "./components/ImagePreview";
 import {ImageProcessing} from "./components/ImageProcessing";
@@ -10,24 +12,17 @@ import {Image} from "./types/image";
 import {useImageSegmentation} from "./useImageSegmentation";
 import {applyAlphaMask} from "./utils/image";
 
-enum State {
-  Upload,
-  Progress,
-  Done,
-}
-
 export default function Home() {
-  const [inputImage, setInputImage] = useState<Partial<Image>>({});
-  const [outputImage, setOutputImage] = useState<Partial<Image>>({});
-
-  const [state, setState] = useState(State.Upload);
+  const [sourceImage, setSourceImage] = useState<Image | undefined>();
+  const [outputImage, setOutputImage] = useState<Omit<Image, "raw"> | undefined>(); // Omitting raw data because it's not needed
   const pipeline = useImageSegmentation("briaai/RMBG-1.4");
+  const progressInfo = pipeline.info;
+  const isScreenUpload = !sourceImage;
+  const isScreenProcessing = sourceImage && progressInfo;
+  const isScreenDownload = outputImage;
 
-  const isState = (s: State) => s === state;
-
-  const handleInputChange = (image: Image) => {
-    setState(State.Progress);
-    setInputImage(image);
+  const handleSourceChange = (image: Image) => {
+    setSourceImage(image);
     handleImageProcessing(image);
   };
 
@@ -45,7 +40,8 @@ export default function Home() {
     const processedPixelData = applyAlphaMask(sourcePixelData, maskPixelData);
 
     // Create and render the output image data object
-    createFinalResult(
+    createOutputImage(
+      sourceImage.name,
       new ImageData(
         processedPixelData as Uint8ClampedArray,
         sourceImage.raw.width,
@@ -54,102 +50,42 @@ export default function Home() {
     );
   };
 
-  const createFinalResult = async (data: ImageData) => {
+  const createOutputImage = async (name: string, data: ImageData) => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     canvas.width = data.width;
     canvas.height = data.height;
     if (ctx) {
       ctx.putImageData(data, 0, 0);
-      setOutputImage({url: canvas.toDataURL("image/png")});
-      setState(State.Done);
+      setOutputImage({
+        url: canvas.toDataURL("image/png"),
+        name,
+      });
+    } else {
+      throw new Error("Unexpected error. Failed to create output image.");
     }
   };
 
   const reset = () => {
-    setInputImage({});
-    setOutputImage({});
-    setState(State.Upload);
-  };
-
-  const uploadExample = async (num: number) => {
-    const url = `/example-${num}.jpg`;
-    const name = `example-${num}`;
-    const raw = await RawImage.fromURL(url);
-    const exampleImage: Image = {
-      url,
-      name,
-      raw,
-    };
-    setState(State.Progress);
-    setInputImage(exampleImage);
-    handleImageProcessing(exampleImage);
+    setSourceImage(undefined);
+    setOutputImage(undefined);
   };
 
   return (
-    <div className="flex justify-center items-start h-full pt-[12lvh]">
-      <div className="max-w-2xl">
-        <Header />
-
-        <div className="mt-5 mb-5 w-full h-[50lvh] ">
-          {isState(State.Upload) && <ImageUpload onInputChange={handleInputChange} />}
-          {isState(State.Progress) && <ImageProcessing url={inputImage.url || ""} />}
-          {isState(State.Done) && <ImagePreview url={outputImage.url || ""} />}
-        </div>
-
-        {/* Footer */}
-        <div className="flex justify-center items-center">
-          {isState(State.Upload) && (
-            <p className="">
-              <a
-                onClick={() => uploadExample(1)}
-                className="cursor-pointer text-gray-600 hover:text-blue-500 underline mr-4"
-              >
-                Try Example 1
-              </a>
-              <a
-                onClick={() => uploadExample(2)}
-                className="cursor-pointer text-gray-600 hover:text-blue-500 underline"
-              >
-                Try Example 2
-              </a>
-            </p>
-          )}
-
-          {isState(State.Progress) &&
-            pipeline.info?.status === "progress" &&
-            pipeline.info.progress < 100 && (
-              <div>
-                <label className="text-xs font-mono">Downloading {pipeline.info.file}</label>
-                <progress className="w-full" value={pipeline.info.progress} max="100" />
-              </div>
-            )}
-
-          {isState(State.Progress) && pipeline.info?.status === "ready" && (
-            <div className="text-center">
-              <label className="text-xs font-mono">Analysing the image...</label>
-            </div>
-          )}
-
-          {isState(State.Done) && (
-            <div className="flex justify-center items-center">
-              <a
-                className="cursor-pointer text-gray-600 hover:text-blue-500 underline mr-4"
-                onClick={() => reset()}
-              >
-                Reset
-              </a>
-              <a
-                className="bg-blue-600 py-1 px-3 text-white hover:bg-blue-500 active:bg-blue-600 rounded"
-                href={outputImage.url}
-                download={`nobg_${inputImage.name}.png`}
-              >
-                Download Image
-              </a>
-            </div>
-          )}
-        </div>
-      </div>
+    <div className="flex h-full flex-col p-4 max-w-5xl mx-auto md:py-6">
+      <Header />
+      <main className="flex-grow flex flex-col m-4">
+        {isScreenUpload && <ImageUpload onInputChange={handleSourceChange} />}
+        {isScreenProcessing && <ImageProcessing url={sourceImage.url} />}
+        {isScreenDownload && <ImagePreview url={outputImage.url} />}
+      </main>
+      <footer className="h-10">
+        {isScreenUpload && <FooterWithExamples onExampleClick={handleSourceChange} />}
+        {isScreenProcessing && <FooterWithProgress info={progressInfo} />}
+        {isScreenDownload && (
+          <FooterWithDownloaod downloadLink={outputImage} onResetClick={reset} />
+        )}
+      </footer>
     </div>
   );
 }

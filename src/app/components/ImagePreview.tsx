@@ -10,7 +10,7 @@ export function ImagePreview({url}: ImagePreview.Props) {
     <img
       src={url}
       alt=""
-      className="h-full mx-auto"
+      className="flex-grow h-0 mx-auto object-contain"
       style={{
         backgroundImage: `url(${transparencyPattern})`,
       }}

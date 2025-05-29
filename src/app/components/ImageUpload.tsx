@@ -2,11 +2,13 @@ import {RawImage} from "@huggingface/transformers";
 import {ChangeEvent} from "react";
 import {Image} from "../types/image";
 
-export interface ImageUploadProps {
-  onInputChange: (image: Image) => void;
+export namespace ImageUpload {
+  export interface Props {
+    onInputChange: (image: Image) => void;
+  }
 }
 
-export default function ImageUpload({onInputChange}: ImageUploadProps) {
+export function ImageUpload({onInputChange}: ImageUpload.Props) {
   const handleInputChange = async (evt: ChangeEvent<HTMLInputElement>) => {
     if (evt.target.files instanceof FileList && evt.target.files[0]) {
       const file = evt.target.files[0];

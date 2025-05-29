@@ -1,4 +1,10 @@
-export function ImageProcessing({url}: {url: string}) {
+export namespace ImageProcessing {
+  export interface Props {
+    url: string;
+  }
+}
+
+export function ImageProcessing({url}: ImageProcessing.Props) {
   return (
     <div
       className="relative overflow-hidden w-full h-full flex flex-col justify-center items-center rounded-xl bg-contain bg-center bg-no-repeat"

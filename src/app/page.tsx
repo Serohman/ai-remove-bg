@@ -5,15 +5,15 @@ import React, {useState} from "react";
 import {Header} from "./components/Header";
 import {ImagePreview} from "./components/ImagePreview";
 import {ImageProcessing} from "./components/ImageProcessing";
-import ImageUpload, {ImageUploadProps} from "./components/ImageUpload";
+import {ImageUpload} from "./components/ImageUpload";
 import {Image} from "./types/image";
 import {useImageSegmentation} from "./useImageSegmentation";
 import {applyAlphaMask} from "./utils/image";
 
 enum State {
   Upload,
-  Process,
-  Finished,
+  Progress,
+  Done,
 }
 
 export default function Home() {
@@ -25,8 +25,8 @@ export default function Home() {
 
   const isState = (s: State) => s === state;
 
-  const handleInputChange: ImageUploadProps["onInputChange"] = async (image) => {
-    setState(State.Process);
+  const handleInputChange = (image: Image) => {
+    setState(State.Progress);
     setInputImage(image);
     handleImageProcessing(image);
   };
@@ -44,7 +44,7 @@ export default function Home() {
     // Apply the mask to the original image
     const processedPixelData = applyAlphaMask(sourcePixelData, maskPixelData);
 
-    // Create and renderthe output image data object
+    // Create and render the output image data object
     createFinalResult(
       new ImageData(
         processedPixelData as Uint8ClampedArray,
@@ -62,7 +62,7 @@ export default function Home() {
     if (ctx) {
       ctx.putImageData(data, 0, 0);
       setOutputImage({url: canvas.toDataURL("image/png")});
-      setState(State.Finished);
+      setState(State.Done);
     }
   };
 
@@ -81,7 +81,7 @@ export default function Home() {
       name,
       raw,
     };
-    setState(State.Process);
+    setState(State.Progress);
     setInputImage(exampleImage);
     handleImageProcessing(exampleImage);
   };
@@ -91,11 +91,10 @@ export default function Home() {
       <div className="max-w-2xl">
         <Header />
 
-        {/* Image Thumbnail */}
         <div className="mt-5 mb-5 w-full h-[50lvh] ">
           {isState(State.Upload) && <ImageUpload onInputChange={handleInputChange} />}
-          {isState(State.Process) && <ImageProcessing url={inputImage.url || ""} />}
-          {isState(State.Finished) && <ImagePreview url={outputImage.url || ""} />}
+          {isState(State.Progress) && <ImageProcessing url={inputImage.url || ""} />}
+          {isState(State.Done) && <ImagePreview url={outputImage.url || ""} />}
         </div>
 
         {/* Footer */}
@@ -117,7 +116,7 @@ export default function Home() {
             </p>
           )}
 
-          {isState(State.Process) &&
+          {isState(State.Progress) &&
             pipeline.info?.status === "progress" &&
             pipeline.info.progress < 100 && (
               <div>
@@ -126,13 +125,13 @@ export default function Home() {
               </div>
             )}
 
-          {isState(State.Process) && pipeline.info?.status === "ready" && (
+          {isState(State.Progress) && pipeline.info?.status === "ready" && (
             <div className="text-center">
               <label className="text-xs font-mono">Analysing the image...</label>
             </div>
           )}
 
-          {isState(State.Finished) && (
+          {isState(State.Done) && (
             <div className="flex justify-center items-center">
               <a
                 className="cursor-pointer text-gray-600 hover:text-blue-500 underline mr-4"

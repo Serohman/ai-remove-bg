@@ -8,8 +8,8 @@ import {Header} from "./components/Header";
 import {ImagePreview} from "./components/ImagePreview";
 import {ImageProcessing} from "./components/ImageProcessing";
 import {ImageUpload} from "./components/ImageUpload";
+import {useImageSegmentation} from "./hooks/useImageSegmentation";
 import {Image} from "./types/image";
-import {useImageSegmentation} from "./useImageSegmentation";
 import {applyAlphaMask} from "./utils/image";
 
 export default function Home() {

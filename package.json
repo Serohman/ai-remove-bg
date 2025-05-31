@@ -15,7 +15,8 @@
   ],
   "scripts": {
     "prepare": "husky",
-    "start": "npm run dev",
+    "build": "next build",
+    "start": "next start",
     "dev": "next dev --turbopack",
     "lint": "next lint",
     "test": "jest",

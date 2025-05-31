@@ -37,7 +37,7 @@ export function ImageUpload({onInputChange}: ImageUpload.Props) {
         </svg>
       </div>
       <h2 className="leading-none mb-1 text-xl">Upload Images</h2>
-      <p className="leading-none text-sm text-gray-500 mb-1">Supports: JPG, JPEG, PNG, WebP</p>
+      <p className="leading-none text-sm text-gray-500 mb-1">Supports: JPG, JPEG, PNG, WEBP</p>
       <input type="file" accept=".jpg, .jpeg, .png, .webp" onChange={handleInputChange} hidden />
     </label>
   );

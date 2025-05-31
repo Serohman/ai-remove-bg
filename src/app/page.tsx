@@ -1,16 +1,16 @@
 "use client";
 
 import React, {useState} from "react";
-import {FooterWithDownloaod} from "./components/FooterWithDownload";
-import {FooterWithExamples} from "./components/FooterWithExamples";
-import {FooterWithProgress} from "./components/FooterWithProgress";
-import {Header} from "./components/Header";
-import {ImagePreview} from "./components/ImagePreview";
-import {ImageProcessing} from "./components/ImageProcessing";
-import {ImageUpload} from "./components/ImageUpload";
-import {useImageSegmentation} from "./hooks/useImageSegmentation";
-import {Image} from "./types/image";
-import {applyAlphaMask} from "./utils/image";
+import {FooterWithDownloaod} from "@/components/FooterWithDownload";
+import {FooterWithExamples} from "@/components/FooterWithExamples";
+import {FooterWithProgress} from "@/components/FooterWithProgress";
+import {Header} from "@/components/Header";
+import {ImagePreview} from "@/components/ImagePreview";
+import {ImageProcessing} from "@/components/ImageProcessing";
+import {ImageUpload} from "@/components/ImageUpload";
+import {useImageSegmentation} from "@/hooks/useImageSegmentation";
+import {Image} from "@/types/image";
+import {applyAlphaMask} from "@/utils/image";
 
 export default function Home() {
   const [sourceImage, setSourceImage] = useState<Image | undefined>();

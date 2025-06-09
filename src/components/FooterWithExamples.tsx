@@ -9,7 +9,7 @@ export namespace FooterWithExamples {
 
 export function FooterWithExamples({onExampleClick}: FooterWithExamples.Props) {
   const handleExampleClick = async (num: number) => {
-    const url = `/example-${num}.jpg`;
+    const url = `example-${num}.jpg`;
     const name = `example-${num}`;
     const raw = await RawImage.fromURL(url);
     onExampleClick({url, name, raw});
@@ -21,13 +21,13 @@ export function FooterWithExamples({onExampleClick}: FooterWithExamples.Props) {
         onClick={() => handleExampleClick(1)}
         className="cursor-pointer text-gray-600 hover:text-blue-500 underline mr-4"
       >
-        Try Example 1
+        Example 1
       </a>
       <a
         onClick={() => handleExampleClick(2)}
         className="cursor-pointer text-gray-600 hover:text-blue-500 underline"
       >
-        Try Example 2
+        Example 2
       </a>
     </p>
   );

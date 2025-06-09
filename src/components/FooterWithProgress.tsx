@@ -7,8 +7,6 @@ export namespace FooterWithProgress {
 }
 
 export function FooterWithProgress({info}: FooterWithProgress.Props) {
-  console.log(info);
-  console.log(info.status === "progress" && info.progress < 100);
   return (
     <>
       {/* Downloading */}

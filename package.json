@@ -16,6 +16,7 @@
   "scripts": {
     "prepare": "husky",
     "build": "next build",
+    "export": "next build",
     "start": "next start",
     "dev": "next dev --turbopack",
     "lint": "next lint",

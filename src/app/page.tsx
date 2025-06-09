@@ -72,9 +72,9 @@ export default function Home() {
   };
 
   return (
-    <div className="flex h-full flex-col p-4 max-w-5xl mx-auto md:py-6">
+    <div className="flex h-full flex-col p-4 max-w-5xl mx-auto md:py-6 lg:py-8">
       <Header />
-      <main className="flex-grow flex flex-col m-4">
+      <main className="flex-grow flex flex-col m-4 md:my-6 lg:my-8">
         {isScreenUpload && <ImageUpload onInputChange={handleSourceChange} />}
         {isScreenProcessing && <ImageProcessing url={sourceImage.url} />}
         {isScreenDownload && <ImagePreview url={outputImage.url} />}

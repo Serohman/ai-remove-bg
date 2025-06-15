@@ -1,6 +1,10 @@
 "use client";
 
-import React, {useState} from "react";
+import {
+  ImageSegmentationPipelineOptions,
+  ProgressInfo,
+  pipeline as tpipeline,
+} from "@huggingface/transformers";
 import {FooterWithDownloaod} from "@/components/FooterWithDownload";
 import {FooterWithExamples} from "@/components/FooterWithExamples";
 import {FooterWithProgress} from "@/components/FooterWithProgress";

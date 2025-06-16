@@ -2,6 +2,8 @@
 
 This project is a web application built with Next.js that allows users to easily remove backgrounds from images using artificial intelligence.
 
+[See live demo](serohman.github.io/ai-remove-bg)
+
 ## Features
 
 - **Easy Image Upload:** Simple interface for uploading images.
